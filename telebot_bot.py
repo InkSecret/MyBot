@@ -31,15 +31,18 @@ def send_message(message):
 @bot.message_handler(content_types=['location'])
 def send_location(message):
     api_key = '972c30fbde4e73d309d485f124b29331'
-    data = {'lat':message.location.latitude, 'lon':message.location.longitude, 'APPID': api_key}
-    url = 'http://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&appid={2}&lang=ru'.format(message.location.latitude, message.location.longitude, api_key)
-    req = requests.post(url).json()
-    output = 'City: %s\n' % (req['name'])
+    data = {'lat':message.location.latitude, 'lon':message.location.longitude, 'APPID': api_key, 'lang':'ru', 'units':'metric'}
+    # url = 'http://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&appid={2}&lang=ru&units=metric'.format(message.location.latitude, message.location.longitude, api_key)
+    # req = requests.post(url).json()
+    url = 'http://api.openweathermap.org/data/2.5/weather'
+    req = requests.post(url, params=data).json()
+    insert_text = (req['name'], req['weather'][0]['description'], req['main']['temp'], req['main']['humidity'], '%')
+    output = 'Город: %s\nПогода: %s\nТемпература: %s\nВлажность: %s%s' % insert_text
     bot.send_message(message.chat.id, output)
-    print(req)
 
 @bot.message_handler(content_types=['sticker'])
 def send_sticker(message):
+    print(message.sticker.emoji.encode())
     bot.send_message(message.chat.id, 'Name => %s\nEmoji => %s\nStiker id => %s'%(message.sticker.set_name, message.sticker.emoji, message.sticker.file_id))
 
 @bot.callback_query_handler(func=lambda call: True)
