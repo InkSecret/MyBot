@@ -32,7 +32,7 @@ def send_message(message):
 def send_location(message):
     api_key = '972c30fbde4e73d309d485f124b29331'
     data = {'lat':message.location.latitude, 'lon':message.location.longitude, 'APPID': api_key}
-    url = 'http://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&appid={2}'.format(message.location.latitude, message.location.longitude, api_key)
+    url = 'http://api.openweathermap.org/data/2.5/weather?lat={0}&lon={1}&appid={2}&lang=ru'.format(message.location.latitude, message.location.longitude, api_key)
     req = requests.post(url).json()
     output = 'City: %s\n' % (req['name'])
     bot.send_message(message.chat.id, output)
